@@ -1,0 +1,18 @@
+{
+  "name": "p5-global2instance",
+  "version": "0.1.0",
+  "description": "Convert p5js code/snippet from global to instance mode",
+  "main": "index.js",
+  "repository": "git@github.com:DrSensor/p5-global2instance.git",
+  "author": "Fahmi Akbar Wildana <f.a.wildana@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "acorn": "^5.2.1",
+    "commander": "^2.12.2",
+    "escodegen": "^1.9.0",
+    "esprima": "^4.0.0",
+    "esquery": "^1.0.0",
+    "estemplate": "^0.5.1"
+  }
+}
