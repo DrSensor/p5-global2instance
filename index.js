@@ -5,7 +5,10 @@ const { URL } = require('url')
 const program = require('commander')
 const esprima = require('esprima')
 const escodegen = require('escodegen')
+const esquery = require('esquery')
 const estemplate = require('estemplate')
+
+const { scopeFunc } = require('./list-p5func')
 
 const opts = {
   esprima: {
@@ -34,6 +37,31 @@ const opts = {
   }
 }
 
+
+function printAST (ast) {
+  const asts = estemplate('%= body%', { body: ast })
+  console.log(escodegen.generate(asts, opts.escodegen).code)
+}
+
+
+function wrapP5Func (ast) {
+  if (!['VariableDeclaration', 'FunctionDeclaration'].includes(ast.type)) {
+    throw Error(`wrong type ${ast.type}`)
+  }
+
+  const name = ast.id ? ast.id.name : ast.declarations[0].id.name
+  const expr = ast.id ? ast : ast.declarations[0].init
+
+  if (scopeFunc.includes(name)) {
+    expr.id.name = null
+    return estemplate(`sketch.${name} = <%= expr%>`, {
+      expr: expr
+    })
+  } else return ast
+}
+const wrapP5Funcs = ASTs => ASTs.map(wrapP5Func)
+
+
 program
   .arguments('[file]')
   .option('-o, --output [file]', 'Save output file to [file]')
@@ -45,12 +73,13 @@ program
     // https://github.com/estools/estemplate#advanced-generation-with-source-map
     const template = estemplate.compile(templateCode)
     const source = esprima.parseModule(sourceCode, opts.esprima)
-    // console.log(source)
+
+    let vars = esquery(source, 'VariableDeclaration')
+    let funcs = esquery(source, 'FunctionDeclaration')
     let ast = template({
-      body: source.body
+      p5Main: vars.concat(wrapP5Funcs(funcs))
     })
-    console.info(ast)
     const output = escodegen.generate(ast, opts.escodegen)
-    console.info(output.code)
+    console.log(output.code)
   })
   .parse(process.argv)
