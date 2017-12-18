@@ -23,5 +23,6 @@ module.exports = {
     sourceMap: true,
     sourceMapWithCode: true,
     comment: false
-  }
+  },
+  instance: '$_p'
 }

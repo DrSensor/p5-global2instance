@@ -353,6 +353,11 @@ const stdFuncs = {
   ]
 }
 
+const p5funcs = [
+  ...p5callFuncs,
+  ...p5slowFuncs
+]
+
 const p5exprs = [
   ...p5callFuncs,
   ...p5vars,
@@ -361,8 +366,9 @@ const p5exprs = [
 
 module.exports = {
   p5scopeFuncs,
-  p5exprs,
   p5callFuncs,
+  p5funcs,
+  p5exprs,
   p5vars,
   p5Instance,
   stdFuncs,

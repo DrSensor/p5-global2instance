@@ -7,9 +7,10 @@ var next = 0;
 // Where are we now and where were we?
 var current;
 var previous;
+var ext = {};
 
 function setup () {
-  createCanvas(720, 400);
+  createCanvas(width, 400);
   current = createVector(0, 0);
   previous = createVector(0, 0);
 };
@@ -50,8 +51,10 @@ function draw () {
 function mousePressed () {
   next = 0;
   painting = true;
+  ext.mouseX = mouseX;
   previous.x = mouseX;
   previous.y = mouseY;
+
   paths.push(new Path());
 }
 

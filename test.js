@@ -15,6 +15,8 @@ program
     const sourceCode = fs.readFileSync(url(file), 'utf8')
 
     const output = convert(sourceCode)
+    
+    if (program.print) console.log(output)
 
     if (program.output) {
       var outFile = program.output.length > 0 ? `${program.output}.p5.js` : url(`${file.replace('.js', '')}.p5.js`)
@@ -23,7 +25,6 @@ program
 
       fs.writeFileSync(outFile, output, 'utf-8')
       console.log(`=> save to ${outFile}`)
-    } else console.log(output)
-    if (program.print) console.log(output)
+    } else if (!program.print) console.log(output)
   })
   .parse(process.argv)

@@ -3,11 +3,12 @@ const escodegen = require('escodegen')
 const esquery = require('esquery')
 const estemplate = require('estemplate')
 
-const { p5scopeFuncs, p5exprs } = require('./list-p5func')
+const { p5scopeFuncs, p5vars, p5funcs } = require('./list-p5func')
 const opts = require('./config')
+var instance = 'sketch'
 
-const ast2code = ast => escodegen.generate(ast, opts.escodegen).code
-const code2ast = code => esprima.parseModule(code, opts.esprima)
+const ast2code = (ast, options = opts) => escodegen.generate(ast, options.escodegen).code
+const code2ast = (code, options = opts) => esprima.parseModule(code, options.esprima)
 
 function printAST (ast) {
   const asts = estemplate('%= body%', { body: ast })
@@ -17,8 +18,11 @@ function printAST (ast) {
 
 function wrapP5Scope (ast) {
   let code = ast2code(ast)
-  for (const func of p5exprs) {
-    code = code.replace(new RegExp(func, 'g'), `sketch.${func}`)
+  for (const p5var of p5vars) {
+    code = code.replace(new RegExp(`([^.\\w])(${p5var})[;\\s]?`, 'gm'), (match, p1, p2) => `${p1}${instance}.${p2}`)
+  }
+  for (const p5func of p5funcs) {
+    code = code.replace(new RegExp(`([^.\\w])(${p5func}[(])`, 'gm'), (match, p1, p2) => `${p1}${instance}.${p2}`)
   }
   return code2ast(code)
 }
@@ -34,7 +38,7 @@ function wrapP5Func (ast) {
 
   if (p5scopeFuncs.includes(name)) {
     expr.id.name = null
-    ast = estemplate(`sketch.${name} = <%= expr%>`, {
+    ast = estemplate(`${instance}.${name} = <%= expr%>`, {
       expr: expr
     })
   }
@@ -44,10 +48,9 @@ const wrapP5Funcs = ASTs => ASTs.map(wrapP5Func)
 
 
 module.exports = function (sourceCode, options = opts) {
+  instance = options.instance
   const templateCode = `
-  import p5 from 'p5'
-  
-  export default function (sketch) {
+  export default function (${instance}) {
     %= p5Main %
   }
   `
@@ -61,6 +64,8 @@ module.exports = function (sourceCode, options = opts) {
   let ast = template({
     p5Main: vars.concat(wrapP5Funcs(funcs))
   })
-  const output = escodegen.generate(ast, options.escodegen)
-  return output.code
+
+  let output = escodegen.generate(ast, options.escodegen).code
+  if (output.includes('p5.')) output = `import p5 from 'p5'\n${output}`
+  return output
 }
