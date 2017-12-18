@@ -1,5 +1,7 @@
 # p5-global2instance
-Convert p5js code/snippet from global to instance mode
+[![CircleCI](https://circleci.com/gh/DrSensor/p5-global2instance.svg?style=svg)](https://circleci.com/gh/DrSensor/p5-global2instance)
+
+Convert p5js code/snippet from global to instance mode.
 
 ## Install
 
@@ -81,6 +83,7 @@ You can also pass [esprima](http://esprima.readthedocs.io/en/latest/syntactic-an
 ```javascript
 p5Convert(sourceCode, {
   esprima: {},
-  escodegen: {}
+  escodegen: {},
+  instance: 'sketch' // default $_p
 })
 ```
