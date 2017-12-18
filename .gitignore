@@ -1,6 +1,8 @@
 # Output
 *.p5.js
 !example.p5.js
+yarn*
+package-lock.json
 
 # Logs
 logs

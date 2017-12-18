@@ -46,14 +46,14 @@ const wrapP5Funcs = ASTs => ASTs.map(wrapP5Func)
 module.exports = function (sourceCode, options = opts) {
   const templateCode = `
   import p5 from 'p5'
-
+  
   export default function (sketch) {
     %= p5Main %
   }
   `
 
   // https://github.com/estools/estemplate#advanced-generation-with-source-map
-  const template = estemplate.compile(templateCode)
+  const template = estemplate.compile(templateCode, options.esprima)
   const source = esprima.parseModule(sourceCode, options.esprima)
 
   let vars = esquery(source, 'VariableDeclaration')
