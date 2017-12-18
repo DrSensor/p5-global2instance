@@ -42,10 +42,11 @@ function wrapP5Func (ast) {
 }
 const wrapP5Funcs = ASTs => ASTs.map(wrapP5Func)
 
-module.exports = function (sourceCode) {
+
+module.exports = function (sourceCode, options = opts) {
   const templateCode = `
   import p5 from 'p5'
-  
+
   export default function (sketch) {
     %= p5Main %
   }
@@ -53,13 +54,13 @@ module.exports = function (sourceCode) {
 
   // https://github.com/estools/estemplate#advanced-generation-with-source-map
   const template = estemplate.compile(templateCode)
-  const source = esprima.parseModule(sourceCode, opts.esprima)
+  const source = esprima.parseModule(sourceCode, options.esprima)
 
   let vars = esquery(source, 'VariableDeclaration')
   let funcs = esquery(source, 'FunctionDeclaration')
   let ast = template({
     p5Main: vars.concat(wrapP5Funcs(funcs))
   })
-  const output = escodegen.generate(ast, opts.escodegen)
+  const output = escodegen.generate(ast, options.escodegen)
   return output.code
 }

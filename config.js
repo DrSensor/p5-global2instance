@@ -5,6 +5,7 @@ module.exports = {
     tolerant: true,
     comment: true
   },
+
   escodegen: {
     format: {
       indent: {

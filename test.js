@@ -17,8 +17,10 @@ program
     const output = convert(sourceCode)
 
     if (program.output) {
-      let outFile = program.output.length > 0 ? `${program.output}.p5.js` : url(`instanceof-${file}`)
+      var outFile = program.output.length > 0 ? `${program.output}.p5.js` : url(`${file.replace('.js', '')}.p5.js`)
       if (program.output.length > 0) outFile = program.output.includes('.p5.js') ? program.output : outFile
+      if (file.includes('.p5.js') && !program.output.length) outFile = url(`instanceof-${file}`)
+
       fs.writeFileSync(outFile, output, 'utf-8')
       console.log(`=> save to ${outFile}`)
     } else console.log(output)
