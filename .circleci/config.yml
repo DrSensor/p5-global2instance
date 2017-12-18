@@ -27,8 +27,6 @@ jobs:
   publish:
     docker:
       - image: circleci/node:latest
-    requires:
-      - build
     filters:
       tags:
         only: /^v\d+[.]\d+[.]\d+$/
@@ -36,11 +34,13 @@ jobs:
     steps:
       - checkout
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-      - run: yarn publish --no-git-tag-version --non-interactive
+      - run: npm publish
 
 workflows:
   version: 2
   build_and_publish:
     jobs:
       - build
-      - publish
+      - publish:
+          requires:
+            - build
