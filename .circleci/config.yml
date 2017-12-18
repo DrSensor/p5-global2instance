@@ -27,9 +27,6 @@ jobs:
   publish:
     docker:
       - image: circleci/node:latest
-    filters:
-      tags:
-        only: /^v\d+[.]\d+[.]\d+$/
     working_directory: ~/repo
     steps:
       - checkout
@@ -44,3 +41,6 @@ workflows:
       - publish:
           requires:
             - build
+          filters:
+            tags:
+              only: /^v\d+[.]\d+[.]\d+$/
