@@ -1,10 +1,12 @@
 {
   "name": "p5-global2instance",
-  "version": "0.1.0",
   "description": "Convert p5js code/snippet from global mode to instance mode",
   "main": "index.js",
   "bin": {
     "p5-global2instance": "./test.js"
+  },
+  "scripts": {
+    "test": "node test.js example.p5.js --print"
   },
   "repository": "git@github.com:DrSensor/p5-global2instance.git",
   "author": "Fahmi Akbar Wildana <f.a.wildana@gmail.com>",
