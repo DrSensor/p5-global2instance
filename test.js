@@ -11,7 +11,7 @@ program
   .option('-o, --output [file]', 'Save output file to [file]')
   .option('-p, --print', 'Print result to stdout')
   .action(function (file) {
-    const url = file => new URL(join('file://', join(__dirname, file)))
+    const url = file => new URL(join('file://', join(process.cwd(), file)))
     const sourceCode = fs.readFileSync(url(file), 'utf8')
 
     const output = convert(sourceCode)
